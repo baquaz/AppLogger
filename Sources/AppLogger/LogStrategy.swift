@@ -2,7 +2,7 @@
 //  LogStrategy.swift
 //
 //
-//  Created by Piotr Błachewicz on 07/09/2024.
+//  Created by baquaz on 07/09/2024.
 //
 
 import Foundation

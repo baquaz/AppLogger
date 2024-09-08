@@ -15,7 +15,7 @@ public protocol AppLogging {
     ///   - separator: custom separator for items
     ///   - file: source file of log
     ///   - function: source function of log
-    ///   - line: file's number of log
+    ///   - line: file's line number of log
     static func print(tag: AppLogType?,
                       _ items: Any...,
                       separator: String,

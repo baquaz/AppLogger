@@ -48,6 +48,4 @@ public enum DefaultLogType: AppLogType {
             case .simOnly : "[APP_SIMULATOR_ONLY 🤖]"
         }
     }
-    
-    
 }

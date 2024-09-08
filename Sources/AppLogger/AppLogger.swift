@@ -4,7 +4,12 @@
 import Foundation
 import OSLog
 
-public struct AppLogger: AppLogging {
+public struct AppLogger {
+    public static func print(tag: (any AppLogType)?, _ items: Any..., separator: String, file: String, function: String, line: Int) {
+        print("custom")
+    }
+    
+    private static var currentLogType: AppLogType.Type = DefaultLogType.self
     private static var logStrategy: LogStrategy = DefaultLogStrategy()
     
     private static let isLoggingEnabled: Bool = {
@@ -25,7 +30,7 @@ public struct AppLogger: AppLogging {
     
     // MARK: - Print
     public static func print(
-        tag: AppLogType? = nil,
+        tag: DefaultLogType? = nil,
         _ items: Any...,
         separator: String = " ",
         file: String = #file,

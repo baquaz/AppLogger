@@ -113,3 +113,8 @@ Applog.setLogStrategy(CustomLogStrategy())
 Applog.printCustom("my custom default log")
 Applog.printCustom(tag: MyLogType.critical, "my custom critical message")
 ```
+
+# References
+Many claps 👏 to the author of this post:
+
+https://medium.com/@alessandromanilii/custom-swift-logger-in-xcode15-19da40a058a5

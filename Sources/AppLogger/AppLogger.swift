@@ -6,10 +6,9 @@ import OSLog
 
 public struct AppLogger: AppLogging {
     
-    private static var currentLogType: LogType.Type = LogType.self
     private static var logStrategy: LogStrategy = DefaultLogStrategy()
     
-    private static let isLoggingEnabled: Bool = {
+    private static let isLoggerEnabled: Bool = {
         if let logValue = ProcessInfo.processInfo.environment["ENABLE_APP_LOGGER"] {
             return logValue.lowercased() == "true"
         } else {
@@ -35,7 +34,7 @@ public struct AppLogger: AppLogging {
         line: Int = #line)
     {
 #if DEBUG
-        guard isLoggingEnabled else { return }
+        guard isLoggerEnabled else { return }
         
         let shortFileName = file.components(separatedBy: "/").last ?? "---"
         let locationInfo = "\(shortFileName) - \(function) - line \(line)"
@@ -49,14 +48,12 @@ public struct AppLogger: AppLogging {
         }
             .joined(separator: separator)
         
-        let logTag = tag
-        
-        var msg = "\(logTag.label)"
+        var msg = "\(tag.label)"
         
         // if there is a tag, append output in new line
         if !output.isEmpty { msg += "\n\(output)" }
         
-        logStrategy.log(message: msg, tag: logTag, category: locationInfo)
+        logStrategy.log(message: msg, tag: tag, category: locationInfo)
 #endif
     }
     
@@ -70,7 +67,7 @@ public struct AppLogger: AppLogging {
         line: Int = #line)
     {
 #if DEBUG
-        guard isLoggingEnabled else { return }
+        guard isLoggerEnabled else { return }
         
         let shortFileName = file.components(separatedBy: "/").last ?? "---"
         let locationInfo = "\(shortFileName) - \(function) - line \(line)"

@@ -48,10 +48,7 @@ public struct AppLogger: AppLogging {
         }
             .joined(separator: separator)
         
-        var msg = "\(tag.label)"
-        
-        // if there is a tag, append output in new line
-        if !output.isEmpty { msg += "\n\(output)" }
+        let msg = "\(tag.label)\n\(output)"
         
         logStrategy.log(message: msg, tag: tag, category: locationInfo)
 #endif
@@ -83,10 +80,7 @@ public struct AppLogger: AppLogging {
         
         let logTag = tag ?? logStrategy.defaultLogType
         
-        var msg = "\(logTag.label)"
-        
-        // if there is a tag, append output in new line
-        if !output.isEmpty { msg += "\n\(output)" }
+        let msg = "\(logTag.label)\n\(output)"
         
         logStrategy.log(message: msg, tag: logTag, category: locationInfo)
 #endif

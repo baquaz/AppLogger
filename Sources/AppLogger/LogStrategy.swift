@@ -10,19 +10,18 @@ import os
 
 public protocol LogStrategy {
     var defaultLogType: AppLogType { get set }
-    func log(message: String, tag: AppLogType, category: String)
+    func log(message: String, tag: any AppLogType, category: String)
 }
 
 // MARK: - Default LogStrategy
 public struct DefaultLogStrategy: LogStrategy {
     
-    public var defaultLogType: any AppLogType = DefaultLogType.debug
+    public var defaultLogType: AppLogType = LogType.debug
     
     public func log(message: String, tag: any AppLogType, category: String) {
         let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "--", category: category)
-        
         switch tag {
-            case let tag as DefaultLogType:
+            case let tag as LogType:
                 switch tag {
                     case .error:
                         logger.fault("\(message)")

@@ -8,6 +8,15 @@
 import Foundation
 
 public protocol AppLogging {
+    
+    static func print(
+        tag: LogType,
+        _ items: Any...,
+        separator: String,
+        file: String,
+        function: String,
+        line: Int)
+    
     /// Prints pre-defined log
     /// - Parameters:
     ///   - tag: type of log
@@ -16,7 +25,7 @@ public protocol AppLogging {
     ///   - file: source file of log
     ///   - function: source function of log
     ///   - line: file's line number of log
-    static func print(tag: AppLogType?,
+    static func printCustom(tag: (any AppLogType)?,
                       _ items: Any...,
                       separator: String,
                       file: String,
@@ -30,7 +39,7 @@ public protocol AppLogType {
 }
 
 // MARK: - Loging Tag
-public enum DefaultLogType: AppLogType {
+public enum LogType: AppLogType {
     case error
     case warning
     case success

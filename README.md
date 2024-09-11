@@ -48,7 +48,7 @@ This way we can add logs across entire project without having to import AppLogge
 ### Examples:
 ```swift
 // simple log with default tag
-potentialy("Systems check completed.")
+Applog.print("Systems check completed.")
 
 // simple log with explicit tag
 Applog.print(tag: .debug, "The Jedi Temple remains secure. All is calm 📡")

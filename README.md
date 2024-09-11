@@ -1,24 +1,32 @@
 # AppLogger
-Universal logging system, providing useful debug information for each print log.
+Logging system, providing useful debug information for each print log.
 
 <img src=".resources/applogger-demo.png" width="600"/>
 
 #### Pros
-- logs are printed only for debug mode, so in the production, compiler stripes out the logger code
 - easy to use across the app
-- customizable
-- supports metadata
+- logs are printed only for debug mode, so in the production, compiler stripes out the logger code
+- plain arguments can be passed without being forced to use string interpolation such as `"\(myObject)"`
+- supports interactive metadata
   
   <img src=".resources/applogger-metadata.gif" width="600"/>
 
 #### Cons
-- Location info such as line number, function and file, are passed to the system `Logger` as `category`, so it requires
-  that each log creates new instance of the Logger. This could probably be a problem, however any performance issues were not encountered yet.
+- _Location info_ (such as: line number, function and file) are passed to the system `Logger` as `category`, so it requires
+  that each log creates new instance of the Logger. Potentially this could be a problem, however any performance issues were not encountered yet.
+  
+  For now _location info_ as category, brings interactivity to show/hide it at any point of time.
+  Anyway, this can be easily refactored if a true purpose for categorization is needed (i.e., by moving _location info_ directly to the tag value and set optionally switchable via an extra environment variable).
 
 # Installation SPM
 Add Package Dependency... and paste the URL of this repo: `https://github.com/baquaz/AppLogger.git`
 
 # Requirements
+Platform | Minimum version
+---------| --------------| 
+iOS      |   **14**      | 
+macOS    |   **11**      | 
+
 Add Xcode Environment Variable: `ENABLE_APP_LOGGER` and set value `true` or `false` to handle the logs.
 
 <img src=".resources/xc-var.png" width="600"/>
@@ -26,7 +34,7 @@ Add Xcode Environment Variable: `ENABLE_APP_LOGGER` and set value `true` or `fal
 By default, if the variable is missing, the logs are disabled and there is a warning printed in the console.
 
 # Usage
-To make life easier we should start with defining global type alias.
+To make life easier start with defining global type alias.
 
 ```swift 
 // AppDelegate.swift
@@ -40,7 +48,7 @@ This way we can add logs across entire project without having to import AppLogge
 ### Examples:
 ```swift
 // simple log with default tag
-Applog.print("Systems check completed.")
+potentialy("Systems check completed.")
 
 // simple log with explicit tag
 Applog.print(tag: .debug, "The Jedi Temple remains secure. All is calm 📡")

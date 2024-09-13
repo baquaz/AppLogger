@@ -5,7 +5,17 @@ Logging system, providing useful debug information for each print log.
 
 #### Pros
 - easy to use across the app
-- logs are printed only for debug mode, so in the production, compiler stripes out the logger code
+- easy type filtering
+  
+  <img src=".resources/applogger-select-filter-demo.png" height="245"/>
+
+  <img src=".resources/applogger-selector-filter-demo.png"/>
+
+- easy custom filtering
+  
+  <img src=".resources/applogger-easy-filter-demo.png" width="500"/> 
+  
+- logs are printed only for debug mode, so in the production compiler stripes out the logger code
 - plain arguments can be passed without being forced to use string interpolation such as `"\(myObject)"`
 - supports interactive metadata
   

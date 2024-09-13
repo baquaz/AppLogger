@@ -16,6 +16,8 @@ public protocol LogStrategy {
 // MARK: - Default LogStrategy
 public struct DefaultLogStrategy: LogStrategy {
     
+    public init() {}
+    
     public var defaultLogType: AppLogType = LogType.debug
     
     public func log(message: String, tag: any AppLogType, category: String) {

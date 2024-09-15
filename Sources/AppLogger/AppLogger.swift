@@ -21,7 +21,7 @@ public struct AppLogger: AppLogging {
     }()
     
     // MARK: - Set Custom LogStrategy
-    public static func setCustomLogStrategy(_ strategy: LogStrategy) {
+    public static func setCustomLogStrategy(_ strategy: LogStrategy?) {
         customLogStrategy = strategy
     }
     

@@ -103,7 +103,7 @@ Log Strategy defines how to print each log type
 ```swift
 import os
 
-struct CustomLogStrategy: LogStrategy {
+struct MyCustomLogStrategy: LogStrategy {
     var defaultLogType: AppLogType = MyLogType.info
     
     func log(message: String, tag: any AppLogType, category: String) {
@@ -126,7 +126,7 @@ struct CustomLogStrategy: LogStrategy {
 ### Usage
 ```swift
 // set custom log strategy first
-Applog.setLogStrategy(CustomLogStrategy())
+Applog.setCustomLogStrategy(MyCustomLogStrategy())
 
 Applog.printCustom("my custom default log")
 Applog.printCustom(tag: MyLogType.critical, "my custom critical message")

@@ -6,7 +6,8 @@ import OSLog
 
 public struct AppLogger: AppLogging {
     
-    private static var logStrategy: LogStrategy = DefaultLogStrategy()
+    private static let logStrategy = DefaultLogStrategy()
+    private static var customLogStrategy: LogStrategy?
     
     private static let isLoggerEnabled: Bool = {
         if let logValue = ProcessInfo.processInfo.environment["ENABLE_APP_LOGGER"] {
@@ -20,8 +21,8 @@ public struct AppLogger: AppLogging {
     }()
     
     // MARK: - Set Custom LogStrategy
-    public static func setLogStrategy(_ strategy: LogStrategy) {
-        logStrategy = strategy
+    public static func setCustomLogStrategy(_ strategy: LogStrategy) {
+        customLogStrategy = strategy
     }
     
     // MARK: - Default Print
@@ -54,7 +55,7 @@ public struct AppLogger: AppLogging {
 #endif
     }
     
-    // MARK: - Print Custom Tags
+    // MARK: - Custom Print
     public static func printCustom(
         tag: (any AppLogType)? = nil,
         _ items: Any...,
@@ -82,7 +83,7 @@ public struct AppLogger: AppLogging {
         
         let msg = "\(logTag.label)\n\(output)"
         
-        logStrategy.log(message: msg, tag: logTag, category: locationInfo)
+        customLogStrategy?.log(message: msg, tag: logTag, category: locationInfo)
 #endif
     }
 }

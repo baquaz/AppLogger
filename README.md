@@ -131,6 +131,37 @@ Applog.setCustomLogStrategy(MyCustomLogStrategy())
 Applog.printCustom("my custom default log")
 Applog.printCustom(tag: MyLogType.critical, "my custom critical message")
 ```
+#### Further customization
+`Applog.printCustom(tag: (any AppLogType)? = nil, ...)` is a universal method to handle any type of custom log,
+so it always requires providing specified type of tag.
+
+There is a way to target single type of custom `AppLogType`, by wrapping the `printCustom` function.
+```swift
+extension Applog {
+    
+    public static func printC(
+        tag: MyLogType = .info,
+        _ items: Any...,
+        separator: String = " ",
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line)
+    {
+        Applog.printCustom(
+            tag: .some(tag),
+            items,
+            separator: separator,
+            file: file,
+            function: function,
+            line: line
+        )
+    }
+} 
+
+// now instead of using `Applog.printCustom(tag: MyLogType.critical, "my custom critical message")`
+// just use wrapped function with short case value.
+Applog.printC(tag: .critical, "my custom critical message")
+```
 
 # References
 Many claps 👏 to the author of this post:

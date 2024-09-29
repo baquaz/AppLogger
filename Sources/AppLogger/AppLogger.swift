@@ -5,85 +5,70 @@ import Foundation
 import OSLog
 
 public struct AppLogger: AppLogging {
-    
-    private static let logStrategy = DefaultLogStrategy()
-    private static var customLogStrategy: LogStrategy?
-    
-    private static let isLoggerEnabled: Bool = {
-        if let logValue = ProcessInfo.processInfo.environment["ENABLE_APP_LOGGER"] {
-            return logValue.lowercased() == "true"
-        } else {
+  
+  private static var logStrategy: LogStrategy = DefaultLogStrategy()
+  
+  private static let isLoggerEnabled: Bool = {
+    guard let logValue = ProcessInfo.processInfo.environment["ENABLE_APP_LOGGER"] else {
 #if DEBUG
-            Swift.print("[APP_LOGGER ⚠️]: Xcode Environment Variable `ENABLE_APP_LOGGER` is missing, logs are disabled")
+      Swift.print("[APP_LOGGER ⚠️]: Xcode Environment Variable `ENABLE_APP_LOGGER` is missing, logs are disabled")
 #endif
-            return false
-        }
-    }()
-    
-    // MARK: - Set Custom LogStrategy
-    public static func setCustomLogStrategy(_ strategy: LogStrategy?) {
-        customLogStrategy = strategy
+      return false
     }
     
+    return logValue.lowercased() == "true"
+  }()
+  
+  // MARK: - Set Custom LogStrategy
+  public static func setLogStrategy(_ strategy: LogStrategy) {
+    logStrategy = strategy
+  }
+  
+  // MARK: - Format Location Info
+  private static func formatLocationInfo(
+    file: String, function: String,
+    line: Int) -> String
+  {
+    "\(file.components(separatedBy: "/").last ?? "---") - \(function) - line \(line)"
+  }
+  
     // MARK: - Default Print
-    public static func print(
-        tag: LogType = .debug,
-        _ items: Any...,
-        separator: String = " ",
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line)
-    {
-#if DEBUG
-        guard isLoggerEnabled else { return }
-        
-        let shortFileName = file.components(separatedBy: "/").last ?? "---"
-        let locationInfo = "\(shortFileName) - \(function) - line \(line)"
-        
-        let output = items.map {
-            if let item = $0 as? CustomStringConvertible {
-                "\(item.description)"
-            } else {
-                "\($0)"
-            }
-        }
-            .joined(separator: separator)
-        
-        let msg = "\(tag.label)\n\(output)"
-        
-        logStrategy.log(message: msg, tag: tag, category: locationInfo)
-#endif
-    }
+  public static func print(
+      tag: DefaultLogType = .debug,
+      _ items: Any...,
+      separator: String = " ",
+      file: String = #file,
+      function: String = #function,
+      line: Int = #line)
+  {
+  #if DEBUG
+      guard isLoggerEnabled else { return }
     
-    // MARK: - Custom Print
-    public static func printCustom(
-        tag: (any AppLogType)? = nil,
-        _ items: Any...,
-        separator: String = " ",
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line)
-    {
+      let output = items.map { "\($0)" }.joined(separator: separator)
+    
+      logStrategy.log(message: "\(tag.label)\n\(output)",
+                      tag: tag,
+                      category: formatLocationInfo(file: file, function: function, line: line))
+  #endif
+  }
+  
+  // MARK: - Print Custom Tags
+  public static func printCustom(
+    tag: (any LogType)? = nil,
+    _ items: Any...,
+    separator: String = " ",
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line)
+  {
 #if DEBUG
-        guard isLoggerEnabled else { return }
-        
-        let shortFileName = file.components(separatedBy: "/").last ?? "---"
-        let locationInfo = "\(shortFileName) - \(function) - line \(line)"
-        
-        let output = items.map {
-            if let item = $0 as? CustomStringConvertible {
-                "\(item.description)"
-            } else {
-                "\($0)"
-            }
-        }
-            .joined(separator: separator)
-        
-        let logTag = tag ?? logStrategy.defaultLogType
-        
-        let msg = "\(logTag.label)\n\(output)"
-        
-        customLogStrategy?.log(message: msg, tag: logTag, category: locationInfo)
+    guard isLoggerEnabled else { return }
+
+    let output = items.map { "\($0)" }.joined(separator: separator)
+    
+    logStrategy.log(message: "\(tag?.label ?? "")\n\(output)",
+                    tag: tag ?? logStrategy.defaultLogType,
+                    category: formatLocationInfo(file: file, function: function, line: line))
 #endif
-    }
+  }
 }

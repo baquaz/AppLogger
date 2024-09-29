@@ -64,9 +64,9 @@ Applog.print("Systems check completed.")
 Applog.print(tag: .debug, "The Jedi Temple remains secure. All is calm 📡")
 
 struct Mission {
-    let planet: String
-    let daysETA: Int
-    let commander: String
+  let planet: String
+  let daysETA: Int
+  let commander: String
 }
 
 let mission = Mission(planet: "Dagobah", daysETA: 3, commander: "Master Yoda")
@@ -81,81 +81,89 @@ Applog.print(tag: .network,
 # Customization
 <img src=".resources/applogger-custom-demo.png" width="600"/>
 
-In case there is a need to use custom tags there are `AppLogType` and `LogStrategy` protocols to be used.
+In case there is a need to use custom tags there are `LogType` and `LogStrategy` protocols to be used.
 
-AppLogType defines custom log types.
+LogType defines custom log tags.
 
 ```swift
-enum MyLogType: AppLogType {
-    case info, critical
-
-    var label: String {
-        switch self {
-            case .info:
-                "[MYCUSTOM_INFO ℹ️]"
-            case .critical:
-                "[MYCUSTOM_CRITICAL 🔥]"
-        }
+public enum MyLogType: LogType {
+  case info, critical
+  
+  public var label: String {
+    switch self {
+      case .info:
+        "[MYCUSTOM_INFO ℹ️]"
+      case .critical:
+        "[MYCUSTOM_CRITICAL 🔥]"
     }
+  }
 }
 ```
-Log Strategy defines how to print each log type
+Log Strategy defines how to print each log tag
 ```swift
 import os
 
 struct MyCustomLogStrategy: LogStrategy {
-    var defaultLogType: AppLogType = MyLogType.info
-    
-    func log(message: String, tag: any AppLogType, category: String) {
-        let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "--", category: category)
+  var defaultLogType: LogType = MyLogType.info
+  
+  func log(message: String, tag: any LogType, category: String) {
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "--", category: category)
+    switch tag {
+      case let tag as MyLogType:
         switch tag {
-            case let tag as MyLogType:
-                switch tag {
-                    case .info:
-                        logger.info("\(message)")
-                    case .critical:
-                        logger.critical("\(message)")
-                }
-            default:
-                logger.log("\(message)")
+          case .info: logger.info("\(message)")
+          case .critical: logger.critical("\(message)")
         }
+      case let tag as DefaultLogType:
+        // remap default logs
+        switch tag {
+          case .error: logger.fault("\(message)")
+          case .warning: logger.warning("\(message)")
+          case .success: logger.info("\(message)")
+          case .debug: logger.debug("\(message)")
+          case .network: logger.info("\(message)")
+          case .simOnly: logger.info("\(message)")
+        }
+      default:
+        logger.log("\(message)")
     }
+  }
 }
 ```
 
 ### Usage
 ```swift
 // set custom log strategy first
-Applog.setCustomLogStrategy(MyCustomLogStrategy())
+Applog.setLogStrategy(MyCustomLogStrategy())
 
 Applog.printCustom("my custom default log")
 Applog.printCustom(tag: MyLogType.critical, "my custom critical message")
 ```
 #### Further customization
-`Applog.printCustom(tag: (any AppLogType)? = nil, ...)` is a universal method to handle any type of custom log,
+`Applog.printCustom(tag: (any LogType)? = nil, ...)` is a universal method to handle any type of custom log,
 so it always requires providing specified type of tag.
 
-There is a way to target single type of custom `AppLogType`, by wrapping the `printCustom` function.
+There is a way to target single type of custom `LogType`, by wrapping the `printCustom` function.
 ```swift
 extension Applog {
-    
-    public static func printC(
-        tag: MyLogType = .info,
-        _ items: Any...,
-        separator: String = " ",
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line)
-    {
-        Applog.printCustom(
-            tag: .some(tag),
-            items,
-            separator: separator,
-            file: file,
-            function: function,
-            line: line
-        )
-    }
+  
+  public static func printC(
+    tag: MyLogType = .info,
+    _ items: Any...,
+    separator: String = " ",
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line)
+  {
+    Applog.printCustom(
+      tag: .some(tag),
+      items,
+      separator: separator,
+      file: file,
+      function: function,
+      line: line
+    )
+  }
 } 
 
 // now instead of using `Applog.printCustom(tag: MyLogType.critical, "my custom critical message")`

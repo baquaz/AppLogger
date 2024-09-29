@@ -25,33 +25,29 @@ public struct AppLogger: AppLogging {
   }
   
   // MARK: - Default Print
+  
+  private static func formatLocationInfo(file: String, function: String, line: Int) -> String {
+    "\(file.components(separatedBy: "/").last ?? "---") - \(function) - line \(line)"
+  }
+  
   public static func print(
-    tag: LogType = .debug,
-    _ items: Any...,
-    separator: String = " ",
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line)
+      tag: LogType = .debug,
+      _ items: Any...,
+      separator: String = " ",
+      file: String = #file,
+      function: String = #function,
+      line: Int = #line)
   {
-#if DEBUG
-    guard isLoggerEnabled else { return }
-    
-    let shortFileName = file.components(separatedBy: "/").last ?? "---"
-    let locationInfo = "\(shortFileName) - \(function) - line \(line)"
-    
-    let output = items.map {
-      if let item = $0 as? CustomStringConvertible {
-        "\(item.description)"
-      } else {
-        "\($0)"
-      }
-    }
-      .joined(separator: separator)
-    
-    let msg = "\(tag.label)\n\(output)"
-    
-    logStrategy.log(message: msg, tag: tag, category: locationInfo)
-#endif
+  #if DEBUG
+      guard isLoggerEnabled else { return }
+      
+      let locationInfo = formatLocationInfo(file: file, function: function, line: line)
+      
+      let output = items.map { "\($0)" }.joined(separator: separator)
+      let msg = "\(tag.label)\n\(output)"
+      
+      logStrategy.log(message: msg, tag: tag, category: locationInfo)
+  #endif
   }
   
   // MARK: - Print Custom Tags
@@ -65,24 +61,13 @@ public struct AppLogger: AppLogging {
   {
 #if DEBUG
     guard isLoggerEnabled else { return }
+
+    let locationInfo = formatLocationInfo(file: file, function: function, line: line)
+
+    let output = items.map { "\($0)" }.joined(separator: separator)
+    let msg = "\(tag?.label ?? "")\n\(output)"
     
-    let shortFileName = file.components(separatedBy: "/").last ?? "---"
-    let locationInfo = "\(shortFileName) - \(function) - line \(line)"
-    
-    let output = items.map {
-      if let item = $0 as? CustomStringConvertible {
-        "\(item.description)"
-      } else {
-        "\($0)"
-      }
-    }
-      .joined(separator: separator)
-    
-    let logTag = tag ?? logStrategy.defaultLogType
-    
-    let msg = "\(logTag.label)\n\(output)"
-    
-    logStrategy.log(message: msg, tag: logTag, category: locationInfo)
+    logStrategy.log(message: msg, tag: tag ?? LogType.debug, category: locationInfo)
 #endif
   }
 }

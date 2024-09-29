@@ -25,8 +25,10 @@ public struct AppLogger: AppLogging {
   }
   
   // MARK: - Default Print
-  
-  private static func formatLocationInfo(file: String, function: String, line: Int) -> String {
+  private static func formatLocationInfo(
+    file: String, function: String,
+    line: Int) -> String
+  {
     "\(file.components(separatedBy: "/").last ?? "---") - \(function) - line \(line)"
   }
   
@@ -40,13 +42,12 @@ public struct AppLogger: AppLogging {
   {
   #if DEBUG
       guard isLoggerEnabled else { return }
-      
-      let locationInfo = formatLocationInfo(file: file, function: function, line: line)
-      
+    
       let output = items.map { "\($0)" }.joined(separator: separator)
-      let msg = "\(tag.label)\n\(output)"
-      
-      logStrategy.log(message: msg, tag: tag, category: locationInfo)
+    
+      logStrategy.log(message: "\(tag.label)\n\(output)",
+                      tag: tag,
+                      category: formatLocationInfo(file: file, function: function, line: line))
   #endif
   }
   
@@ -62,12 +63,11 @@ public struct AppLogger: AppLogging {
 #if DEBUG
     guard isLoggerEnabled else { return }
 
-    let locationInfo = formatLocationInfo(file: file, function: function, line: line)
-
     let output = items.map { "\($0)" }.joined(separator: separator)
-    let msg = "\(tag?.label ?? "")\n\(output)"
     
-    logStrategy.log(message: msg, tag: tag ?? LogType.debug, category: locationInfo)
+    logStrategy.log(message: "\(tag?.label ?? "")\n\(output)",
+                    tag: tag ?? LogType.debug,
+                    category: formatLocationInfo(file: file, function: function, line: line))
 #endif
   }
 }

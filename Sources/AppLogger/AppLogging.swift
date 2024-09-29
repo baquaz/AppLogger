@@ -17,14 +17,14 @@ public protocol AppLogging {
   ///   - function: source function of log
   ///   - line: file's line number of log
   static func print(
-    tag: LogType,
+    tag: DefaultLogType,
     _ items: Any...,
     separator: String,
     file: String,
     function: String,
     line: Int)
   
-  static func printCustom(tag: (any AppLogType)?,
+  static func printCustom(tag: (any LogType)?,
                           _ items: Any...,
                           separator: String,
                           file: String,
@@ -33,12 +33,12 @@ public protocol AppLogging {
 }
 
 // MARK: - AppLoggingTag
-public protocol AppLogType {
+public protocol LogType {
   var label: String { get }
 }
 
 // MARK: - Loging Tag
-public enum LogType: AppLogType {
+public enum DefaultLogType: LogType {
   case error
   case warning
   case success

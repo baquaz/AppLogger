@@ -33,7 +33,7 @@ public struct AppLogger: AppLogging {
   }
   
   public static func print(
-      tag: LogType = .debug,
+      tag: DefaultLogType = .debug,
       _ items: Any...,
       separator: String = " ",
       file: String = #file,
@@ -53,7 +53,7 @@ public struct AppLogger: AppLogging {
   
   // MARK: - Print Custom Tags
   public static func printCustom(
-    tag: (any AppLogType)? = nil,
+    tag: (any LogType)? = nil,
     _ items: Any...,
     separator: String = " ",
     file: String = #file,
@@ -66,7 +66,7 @@ public struct AppLogger: AppLogging {
     let output = items.map { "\($0)" }.joined(separator: separator)
     
     logStrategy.log(message: "\(tag?.label ?? "")\n\(output)",
-                    tag: tag ?? LogType.debug,
+                    tag: tag ?? DefaultLogType.debug,
                     category: formatLocationInfo(file: file, function: function, line: line))
 #endif
   }

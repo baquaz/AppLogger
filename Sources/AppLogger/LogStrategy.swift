@@ -9,8 +9,8 @@ import Foundation
 import os
 
 public protocol LogStrategy {
-  var defaultLogType: AppLogType { get set }
-  func log(message: String, tag: any AppLogType, category: String)
+  var defaultLogType: LogType { get set }
+  func log(message: String, tag: any LogType, category: String)
 }
 
 // MARK: - Default LogStrategy
@@ -18,12 +18,12 @@ public struct DefaultLogStrategy: LogStrategy {
   
   public init() {}
   
-  public var defaultLogType: AppLogType = LogType.debug
+  public var defaultLogType: LogType = DefaultLogType.debug
   
-  public func log(message: String, tag: any AppLogType, category: String) {
+  public func log(message: String, tag: any LogType, category: String) {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "--", category: category)
     switch tag {
-      case let tag as LogType:
+      case let tag as DefaultLogType:
         switch tag {
           case .error:
             logger.fault("\(message)")

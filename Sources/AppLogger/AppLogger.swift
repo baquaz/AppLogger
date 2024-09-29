@@ -66,7 +66,7 @@ public struct AppLogger: AppLogging {
     let output = items.map { "\($0)" }.joined(separator: separator)
     
     logStrategy.log(message: "\(tag?.label ?? "")\n\(output)",
-                    tag: tag ?? DefaultLogType.debug,
+                    tag: tag ?? logStrategy.defaultLogType,
                     category: formatLocationInfo(file: file, function: function, line: line))
 #endif
   }

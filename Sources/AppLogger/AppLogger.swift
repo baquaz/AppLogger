@@ -32,29 +32,9 @@ public struct AppLogger: AppLogging {
     "\(file.components(separatedBy: "/").last ?? "---") - \(function) - line \(line)"
   }
   
-    // MARK: - Default Print
+  // MARK: - Print Tags
   public static func print(
-      tag: DefaultLogType = .debug,
-      _ items: Any...,
-      separator: String = " ",
-      file: String = #file,
-      function: String = #function,
-      line: Int = #line)
-  {
-  #if DEBUG
-      guard isLoggerEnabled else { return }
-    
-      let output = items.map { "\($0)" }.joined(separator: separator)
-    
-      logStrategy.log(message: "\(tag.label)\n\(output)",
-                      tag: tag,
-                      category: formatLocationInfo(file: file, function: function, line: line))
-  #endif
-  }
-  
-  // MARK: - Print Custom Tags
-  public static func printCustom(
-    tag: (any LogType)? = nil,
+    tag: (any LogType) = DefaultLogType.debug,
     _ items: Any...,
     separator: String = " ",
     file: String = #file,
@@ -66,8 +46,8 @@ public struct AppLogger: AppLogging {
 
     let output = items.map { "\($0)" }.joined(separator: separator)
     
-    logStrategy.log(message: "\(tag?.label ?? "")\n\(output)",
-                    tag: tag ?? logStrategy.defaultLogType,
+    logStrategy.log(message: "\(tag.label)\n\(output)",
+                    tag: tag,
                     category: formatLocationInfo(file: file, function: function, line: line))
 #endif
   }

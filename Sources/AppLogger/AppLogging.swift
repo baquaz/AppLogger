@@ -17,19 +17,12 @@ public protocol AppLogging {
   ///   - function: source function of log
   ///   - line: file's line number of log
   static func print(
-    tag: DefaultLogType,
+    tag: (any LogType),
     _ items: Any...,
     separator: String,
     file: String,
     function: String,
     line: Int)
-  
-  static func printCustom(tag: (any LogType)?,
-                          _ items: Any...,
-                          separator: String,
-                          file: String,
-                          function: String,
-                          line: Int)
 }
 
 // MARK: - Logging Tag
